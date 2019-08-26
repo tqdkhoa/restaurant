@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,13 +24,18 @@ import com.example.demo.model.BillDetailKey;
 import com.example.demo.model.MenuItem;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderedItem;
+import com.example.demo.model.report.BillItem;
+import com.example.demo.model.report.BillReport;
 import com.example.demo.service.BillDetailService;
 import com.example.demo.service.BillService;
 import com.example.demo.service.MenuItemService;
 import com.example.demo.util.CustomErrorType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/bills")
 public class BillController {
 
 	public static final Logger logger = LoggerFactory.getLogger(BillController.class);
@@ -44,8 +50,8 @@ public class BillController {
 	MenuItemService menuItemService;
 
 	// -------------------Retrieve Bill--------------------------------
-	@RequestMapping(value = "/bill/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Bill> retrieveBill(@PathVariable("id") long id){
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> retrieveBill(@PathVariable("id") long id) throws JsonProcessingException{
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
@@ -53,11 +59,32 @@ public class BillController {
 			return new ResponseEntity("Unable to update build. Bill with id " + id + " does not exist",
 					HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Bill>(currentBill, HttpStatus.OK);
+		
+		BillReport report = new BillReport();
+		report.setBillId(currentBill.getId());
+		
+		Double totalCost = 0.0;
+		Set<BillDetail> billDetails = currentBill.getBillDetails();
+		List<BillItem> billItems = new ArrayList<BillItem>();
+		for(BillDetail billDetail : billDetails) {
+			totalCost +=  billDetail.totalCost();
+			MenuItem menu = menuItemService.findById(billDetail.getId().getMenuItemId());
+			BillItem billItem = new BillItem(menu.getName(), billDetail.getQuantities(), billDetail.getOrderedTime().toGMTString());
+			billItems.add(billItem);
+		}
+		report.setTotal(totalCost);
+		report.setBillItems(billItems);
+		
+		// Create ObjectMapper
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		String jsonReport = mapper.writeValueAsString(report);
+		
+		return new ResponseEntity<>(jsonReport, HttpStatus.OK);
 	}
 
 	// -------------------Create A Bill with One Menu Item-------------
-	@RequestMapping(value = "/bill/", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> createBill(@RequestBody Order order) {
 		Bill bill = new Bill();
 		billService.saveBill(bill);
@@ -75,17 +102,17 @@ public class BillController {
 			}
 			billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
-			billDetail.setOrdered_time(new Date());
+			billDetail.setOrderedTime(new Date());
 			billDetailService.saveBillDetail(billDetail);
 			details.add(billDetail);
 		}
 		bill.setBillDetails(details);
 
-		return new ResponseEntity<Bill>(bill, HttpStatus.OK);
+		return new ResponseEntity<Bill>(bill, HttpStatus.CREATED);
 	}
 
 	// -------------------Update Existing Bill-------------------------
-	@RequestMapping(value = "/bill/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateBill(@PathVariable("id") long id, @RequestBody Order order) {
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
@@ -107,7 +134,7 @@ public class BillController {
 			}
 			billDetail.setId(new BillDetailKey(currentBill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
-			billDetail.setOrdered_time(new Date());
+			billDetail.setOrderedTime(new Date());
 			billDetailService.saveBillDetail(billDetail);
 			details.add(billDetail);
 		}

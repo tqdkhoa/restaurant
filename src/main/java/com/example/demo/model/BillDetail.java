@@ -31,7 +31,7 @@ public class BillDetail {
 	private Integer quantities;
 
 	@Column(name = "odered_time")
-	private Date ordered_time;
+	private Date orderedTime;
 
 	public BillDetail() {
 
@@ -41,7 +41,7 @@ public class BillDetail {
 		super();
 		this.id = id;
 		this.quantities = quantities;
-		this.ordered_time = ordered_time;
+		this.orderedTime = ordered_time;
 	}
 
 	public BillDetailKey getId() {
@@ -60,12 +60,16 @@ public class BillDetail {
 		this.quantities = quantities;
 	}
 
-	public Date getOrdered_time() {
-		return ordered_time;
+	public Date getOrderedTime() {
+		return orderedTime;
 	}
 
-	public void setOrdered_time(Date ordered_time) {
-		this.ordered_time = ordered_time;
+	public void setOrderedTime(Date orderedTime) {
+		this.orderedTime = orderedTime;
+	}
+	
+	public Double totalCost() {
+		return menuItem.getPrice() * this.quantities;
 	}
 
 }

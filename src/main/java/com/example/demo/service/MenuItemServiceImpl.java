@@ -3,6 +3,10 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,11 @@ public class MenuItemServiceImpl implements MenuItemService{
 		return repository.findByName(name);
 	}
 	
+	public List<MenuItem> findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(String name, String description,
+			String details, Pageable pageable){
+		return repository.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name, description, details, pageable);
+	}
+	
 	public void saveMenuItem(MenuItem item) {
 		repository.save(item);
 	}
@@ -40,8 +49,8 @@ public class MenuItemServiceImpl implements MenuItemService{
 		repository.deleteAll();
 	}
 	
-	public List<MenuItem> findAllMenuItems(){
-		return repository.findAll();
+	public List<MenuItem> findAllMenuItems(Pageable pageable){
+		return repository.findAll(pageable).getContent();
 	}
 	
 	public boolean isMenuItemExist(MenuItem item) {

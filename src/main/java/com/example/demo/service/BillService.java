@@ -6,8 +6,8 @@ public interface BillService {
 
 	Bill findById(Long id);
 	
-	public void saveBill(Bill bill);
+	void saveBill(Bill bill);
 	
-	public void updateBill(Bill bill);
+	void updateBill(Bill bill);
 	
 }

@@ -14,8 +14,8 @@ public class BillServiceImpl implements BillService{
 	@Autowired
 	BillRepository repository;
 	
-	public Bill findById(Long Id) {
-		return repository.findById(Id).orElse(null);
+	public Bill findById(Long id) {
+		return repository.findById(id).orElse(null);
 	}
 	
 	public void saveBill(Bill bill) {
