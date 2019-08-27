@@ -1,4 +1,4 @@
-INSERT INTO demo.menu_item (name, description, image_url, price, details) VALUES
+INSERT INTO restaurant.menu_item (name, description, image_url, price, details) VALUES
 ('Hawaiian Pizza', 'All-time favourite toppings, Hawaiian pizza in Tropical Hawaii style.','https://s3-ap-southeast-1.amazonaws.com/interview.ampostech.com/backend/restaurant/menu1.jpg', 300, 'Italian
 Ham
 Pineapple
