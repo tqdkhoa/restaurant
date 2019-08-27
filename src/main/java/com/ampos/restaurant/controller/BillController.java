@@ -46,13 +46,13 @@ public class BillController {
 	private static final Logger logger = LoggerFactory.getLogger(BillController.class);
 
 	@Autowired
-	BillService billService;
+	private BillService billService;
 
 	@Autowired
-	BillDetailService billDetailService;
+	private BillDetailService billDetailService;
 
 	@Autowired
-	MenuItemService menuItemService;
+	private MenuItemService menuItemService;
 
 	// -------------------Retrieve Bill--------------------------------
 	@ApiOperation(value = "Retrieve Bill")

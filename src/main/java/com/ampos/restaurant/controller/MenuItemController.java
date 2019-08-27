@@ -34,7 +34,7 @@ public class MenuItemController {
 	private static final Logger logger = LoggerFactory.getLogger(MenuItemController.class);
 
 	@Autowired
-	MenuItemService menuItemService;
+	private MenuItemService menuItemService;
 
 	// -------------------Retrieve All Menu Items---------------------------
 	@ApiOperation(value = "Retrieve All Menu Items")
