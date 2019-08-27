@@ -12,12 +12,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	@ExceptionHandler(ItemNotFoundException.class)
+	@ExceptionHandler(ObjectNotFoundException.class)
     public void handleNotFoundException(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
 	
-	@ExceptionHandler(ItemConflictException.class)
+	@ExceptionHandler(ObjectAlreadyExistException.class)
 	public void handleConflictException(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.CONFLICT.value());
     }

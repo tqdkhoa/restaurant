@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ampos.restaurant.exception.ItemConflictException;
-import com.ampos.restaurant.exception.ItemNotFoundException;
+import com.ampos.restaurant.exception.ObjectAlreadyExistException;
+import com.ampos.restaurant.exception.ObjectNotFoundException;
 import com.ampos.restaurant.model.MenuItem;
 import com.ampos.restaurant.service.MenuItemService;
 
@@ -48,14 +48,14 @@ public class MenuItemController {
 
 	// -------------------Retrieve Single Menu Item--------------------------------
 	@ApiOperation(value = "Retrieve Single Menu Item")
-	@GetMapping(value = "{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getMenuItem(@PathVariable("id") long id) {
 		
 		logger.info("Fetching MenuItem with id {}", id);
 		MenuItem item = menuItemService.findById(id);
 		if (item == null) {
 			logger.error("MenuItem with id {} not found", id);
-			throw new ItemNotFoundException(String.valueOf(id));
+			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		return new ResponseEntity<MenuItem>(item, HttpStatus.OK);
 	}
@@ -83,7 +83,7 @@ public class MenuItemController {
 		logger.info("Create menu item: {}", item);
 		if (menuItemService.isMenuItemExist(item)) {
 			logger.error("Unable to create. A MenuItem with name {} already exist", item.getName());
-			throw new ItemConflictException(item.getName());
+			throw new ObjectAlreadyExistException(item.getName());
 		}
 		menuItemService.saveMenuItem(item);
 		return new ResponseEntity<MenuItem>(item, HttpStatus.CREATED);
@@ -99,7 +99,7 @@ public class MenuItemController {
 		MenuItem currentItem = menuItemService.findById(id);
 		if (currentItem == null) {
 			logger.error("Unable to update. A Menu Item with id {} not found", id);
-			throw new ItemNotFoundException(String.valueOf(id));
+			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 
 		currentItem.setName(item.getName());
@@ -111,8 +111,8 @@ public class MenuItemController {
 		return new ResponseEntity<MenuItem>(currentItem, HttpStatus.OK);
 	}
 
-	// ------------------- Delete a User-------------------------------------
-	@ApiOperation(value = "Delete a User")
+	// ------------------- Delete a Menu Item-------------------------------------
+	@ApiOperation(value = "Delete a Menu Item")
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteMenuItem(@PathVariable("id") long id) {
 		
@@ -120,19 +120,9 @@ public class MenuItemController {
 		MenuItem item = menuItemService.findById(id);
 		if (item == null) {
 			logger.error("Unable to delete. A menu item with id {} not found", id);
-			throw new ItemNotFoundException(String.valueOf(id));
+			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		menuItemService.deleteMenuItemById(id);
-		return new ResponseEntity<MenuItem>(HttpStatus.NO_CONTENT);
-	}
-
-	// ------------------- Delete all MenuItem--------------------------------
-	@ApiOperation(value = "Delete all MenuItem")
-	@DeleteMapping
-	public ResponseEntity<MenuItem> deleteMenuItem() {
-		
-		logger.info("Delete All Menu Items");
-		menuItemService.deleteAllMenuItems();
 		return new ResponseEntity<MenuItem>(HttpStatus.NO_CONTENT);
 	}
 

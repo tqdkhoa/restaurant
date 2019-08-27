@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ampos.restaurant.exception.ItemNotFoundException;
+import com.ampos.restaurant.exception.ObjectNotFoundException;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
 import com.ampos.restaurant.model.BillDetailKey;
@@ -62,7 +62,7 @@ public class BillController {
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
 			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ItemNotFoundException(String.valueOf(id));
+			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		
 		BillReport report = new BillReport();
@@ -96,14 +96,14 @@ public class BillController {
 		Bill bill = new Bill();
 		billService.saveBill(bill);
 
-		Set<BillDetail> details = new HashSet<BillDetail>();
+		Set<BillDetail> details = new HashSet<>();
 		for (OrderedItem item : order.getOrder()) {
 			logger.info("Create bill for {}, and quantity is {}", item.getName(), item.getQuantity());
 			BillDetail billDetail = new BillDetail();
 			MenuItem menuItem = menuItemService.findByName(item.getName());
 			if (menuItem == null) {
 				logger.error("Unable to create bill. Item name {} does not exist", item.getName());
-				throw new ItemNotFoundException(item.getName());
+				throw new ObjectNotFoundException(item.getName());
 			}
 			billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
@@ -125,7 +125,7 @@ public class BillController {
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
 			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ItemNotFoundException(String.valueOf(id));
+			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		Set<BillDetail> details = new HashSet<BillDetail>();
 		for (OrderedItem item : order.getOrder()) {
@@ -134,7 +134,7 @@ public class BillController {
 			MenuItem menuItem = menuItemService.findByName(item.getName());
 			if (menuItem == null) {
 				logger.error("Unable to create build. Item name {} does not exist", item.getName());
-				throw new ItemNotFoundException(item.getName());
+				throw new ObjectNotFoundException(item.getName());
 			}
 			billDetail.setId(new BillDetailKey(currentBill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());

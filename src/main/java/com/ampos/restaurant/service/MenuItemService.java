@@ -17,11 +17,7 @@ public interface MenuItemService {
 
 	void saveMenuItem(MenuItem item);
 
-	void updateMenuItem(MenuItem item);
-
 	void deleteMenuItemById(Long id);
-
-	void deleteAllMenuItems();
 
 	List<MenuItem> findAllMenuItems(Pageable pageable);
 

@@ -11,6 +11,8 @@ import com.ampos.restaurant.model.MenuItem;
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
 	MenuItem findByName(String name);
+	
+	Long countByName(String name); 
 
 	@Query("select m from MenuItem m " 
 			+ "where upper(m.name) like concat('%', upper(?1), '%') "

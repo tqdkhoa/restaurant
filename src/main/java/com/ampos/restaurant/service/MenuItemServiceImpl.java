@@ -34,16 +34,8 @@ public class MenuItemServiceImpl implements MenuItemService{
 		repository.save(item);
 	}
 	
-	public void updateMenuItem(MenuItem item) {
-		saveMenuItem(item);
-	}
-	
 	public void deleteMenuItemById(Long id) {
 		repository.deleteById(id);
-	}
-	
-	public void deleteAllMenuItems() {
-		repository.deleteAll();
 	}
 	
 	public List<MenuItem> findAllMenuItems(Pageable pageable){
@@ -51,6 +43,6 @@ public class MenuItemServiceImpl implements MenuItemService{
 	}
 	
 	public boolean isMenuItemExist(MenuItem item) {
-		return findByName(item.getName()) != null;
+		return repository.countByName(item.getName()) != 0;
 	}
 }
