@@ -82,7 +82,7 @@ public class MenuItemController {
 	// -------------------Create a MenuItem-------------------------------------------
 	@ApiOperation(value = "Create a MenuItem")
 	@PostMapping
-	public ResponseEntity<?> createMenuItem(@RequestBody MenuItem item, UriComponentsBuilder ucBuidler) {
+	public ResponseEntity<?> createMenuItem(@RequestBody MenuItem item) {
 		logger.info("Create menu item: {}", item);
 
 		if (menuItemService.isMenuItemExist(item)) {
@@ -90,10 +90,7 @@ public class MenuItemController {
 			throw new ItemConflictException(item.getName(), "Unable to create. A MenuItem with name");
 		}
 		menuItemService.saveMenuItem(item);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(ucBuidler.path("/api/user/{id}").buildAndExpand(item.getId()).toUri());
-		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+		return new ResponseEntity<MenuItem>(item, HttpStatus.CREATED);
 	}
 
 	// ------------------- Update a MenuItem ---------------------------------------------
