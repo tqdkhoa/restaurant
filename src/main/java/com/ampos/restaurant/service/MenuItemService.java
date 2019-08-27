@@ -19,7 +19,7 @@ public interface MenuItemService {
 
 	void updateMenuItem(MenuItem item);
 
-	void deleteMenuItemById(Long Id);
+	void deleteMenuItemById(Long id);
 
 	void deleteAllMenuItems();
 

@@ -17,8 +17,8 @@ public class MenuItemServiceImpl implements MenuItemService{
 	@Autowired
 	private MenuItemRepository repository;
 	
-	public MenuItem findById(Long Id) {
-		return repository.findById(Id).orElse(null);
+	public MenuItem findById(Long id) {
+		return repository.findById(id).orElse(null);
 	}
 	
 	public MenuItem findByName(String name) {
@@ -38,8 +38,8 @@ public class MenuItemServiceImpl implements MenuItemService{
 		saveMenuItem(item);
 	}
 	
-	public void deleteMenuItemById(Long Id) {
-		repository.deleteById(Id);
+	public void deleteMenuItemById(Long id) {
+		repository.deleteById(id);
 	}
 	
 	public void deleteAllMenuItems() {

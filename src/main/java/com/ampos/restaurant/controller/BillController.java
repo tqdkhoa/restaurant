@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ampos.restaurant.exception.ItemConflictException;
 import com.ampos.restaurant.exception.ItemNotFoundException;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
@@ -32,7 +31,6 @@ import com.ampos.restaurant.model.report.BillReport;
 import com.ampos.restaurant.service.BillDetailService;
 import com.ampos.restaurant.service.BillService;
 import com.ampos.restaurant.service.MenuItemService;
-import com.ampos.restaurant.util.CustomErrorType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value="Bill Management", description="Bill Management")
 public class BillController {
 
-	public static final Logger logger = LoggerFactory.getLogger(BillController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BillController.class);
 
 	@Autowired
 	BillService billService;
@@ -64,7 +62,7 @@ public class BillController {
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
 			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ItemNotFoundException(String.valueOf(id), "Unable to update build. Bill with id");
+			throw new ItemNotFoundException(String.valueOf(id));
 		}
 		
 		BillReport report = new BillReport();
@@ -94,17 +92,18 @@ public class BillController {
 	@ApiOperation(value = "Create A Bill with Menu Item(s)")
 	@PostMapping
 	public ResponseEntity<?> createBill(@RequestBody Order order) {
+		
 		Bill bill = new Bill();
 		billService.saveBill(bill);
 
 		Set<BillDetail> details = new HashSet<BillDetail>();
 		for (OrderedItem item : order.getOrder()) {
-			logger.info("Create Build for {}, and quantity is {}", item.getName(), item.getQuantity());
+			logger.info("Create bill for {}, and quantity is {}", item.getName(), item.getQuantity());
 			BillDetail billDetail = new BillDetail();
 			MenuItem menuItem = menuItemService.findByName(item.getName());
 			if (menuItem == null) {
-				logger.error("Unable to create build. Item name {} does not exist", item.getName());
-				throw new ItemNotFoundException(item.getName(), "Unable to create build. Item name");
+				logger.error("Unable to create bill. Item name {} does not exist", item.getName());
+				throw new ItemNotFoundException(item.getName());
 			}
 			billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
@@ -121,11 +120,12 @@ public class BillController {
 	@ApiOperation(value = "Update Existing Bill")
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateBill(@PathVariable("id") long id, @RequestBody Order order) {
+		
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
 			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ItemNotFoundException(String.valueOf(id), "Unable to update build. Bill with id");
+			throw new ItemNotFoundException(String.valueOf(id));
 		}
 		Set<BillDetail> details = new HashSet<BillDetail>();
 		for (OrderedItem item : order.getOrder()) {
@@ -134,7 +134,7 @@ public class BillController {
 			MenuItem menuItem = menuItemService.findByName(item.getName());
 			if (menuItem == null) {
 				logger.error("Unable to create build. Item name {} does not exist", item.getName());
-				throw new ItemNotFoundException(item.getName(), "Unable to create build. Item name");
+				throw new ItemNotFoundException(item.getName());
 			}
 			billDetail.setId(new BillDetailKey(currentBill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
