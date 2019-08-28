@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.repositories.BillRepository;
 
-@Service("buildService")
+@Service("billService")
 @Transactional
 public class BillServiceImpl implements BillService {
 

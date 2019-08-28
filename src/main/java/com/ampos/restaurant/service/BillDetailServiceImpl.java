@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ampos.restaurant.model.BillDetail;
 import com.ampos.restaurant.repositories.BillDetailRepository;
 
-@Service("buildDetailService")
+@Service("billDetailService")
 @Transactional
 public class BillDetailServiceImpl implements BillDetailService {
 
