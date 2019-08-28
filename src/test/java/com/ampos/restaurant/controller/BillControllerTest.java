@@ -21,8 +21,8 @@ import com.ampos.restaurant.RestaurantApplicationTests;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
 import com.ampos.restaurant.model.MenuItem;
-import com.ampos.restaurant.model.Order;
-import com.ampos.restaurant.model.OrderedItem;
+import com.ampos.restaurant.model.dto.OrderDTO;
+import com.ampos.restaurant.model.dto.OrderedItemDTO;
 import com.ampos.restaurant.repositories.MenuItemRepository;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -59,10 +59,10 @@ public class BillControllerTest extends RestaurantApplicationTests{
 				post("/api/menu-items").contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(asJsonString(item_2)))
 				.andExpect(status().is(201)).andReturn();
 
-		Order order = new Order();
-		List<OrderedItem> lstOrders = new ArrayList<OrderedItem>();
-		OrderedItem ordered_1 = new OrderedItem("Cheese Burger", 2);
-		OrderedItem ordered_2 = new OrderedItem("Chicken Burger", 2);
+		OrderDTO order = new OrderDTO();
+		List<OrderedItemDTO> lstOrders = new ArrayList<OrderedItemDTO>();
+		OrderedItemDTO ordered_1 = new OrderedItemDTO("Cheese Burger", 2);
+		OrderedItemDTO ordered_2 = new OrderedItemDTO("Chicken Burger", 2);
 		lstOrders.add(ordered_1);
 		lstOrders.add(ordered_2);
 		order.setOrder(lstOrders);
@@ -103,10 +103,10 @@ public class BillControllerTest extends RestaurantApplicationTests{
 				post("/api/menu-items").contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(asJsonString(item_2)))
 				.andExpect(status().is(201)).andReturn();
 
-		Order order_1 = new Order();
-		List<OrderedItem> lstOrders = new ArrayList<OrderedItem>();
-		OrderedItem ordered_1 = new OrderedItem("Cheese Burger", 2);
-		OrderedItem ordered_2 = new OrderedItem("Chicken Burger", 2);
+		OrderDTO order_1 = new OrderDTO();
+		List<OrderedItemDTO> lstOrders = new ArrayList<OrderedItemDTO>();
+		OrderedItemDTO ordered_1 = new OrderedItemDTO("Cheese Burger", 2);
+		OrderedItemDTO ordered_2 = new OrderedItemDTO("Chicken Burger", 2);
 		lstOrders.add(ordered_1);
 		lstOrders.add(ordered_2);
 		order_1.setOrder(lstOrders);
@@ -116,9 +116,9 @@ public class BillControllerTest extends RestaurantApplicationTests{
 				.andExpect(status().is(201)).andReturn();
 
 		lstOrders.clear();
-		Order order_2 = new Order();
-		ordered_1 = new OrderedItem("Cheese Burger", 2);
-		ordered_2 = new OrderedItem("Chicken Burger", 10);
+		OrderDTO order_2 = new OrderDTO();
+		ordered_1 = new OrderedItemDTO("Cheese Burger", 2);
+		ordered_2 = new OrderedItemDTO("Chicken Burger", 10);
 		lstOrders.add(ordered_1);
 		lstOrders.add(ordered_2);
 		order_2.setOrder(lstOrders);

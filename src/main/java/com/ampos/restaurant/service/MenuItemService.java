@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import com.ampos.restaurant.model.MenuItem;
+import com.ampos.restaurant.model.dto.MenuItemDTO;
 
 public interface MenuItemService {
 
@@ -21,4 +22,5 @@ public interface MenuItemService {
 	List<MenuItem> findAllMenuItems(Pageable pageable);
 
 	boolean isMenuItemExist(MenuItem item);
+
 }

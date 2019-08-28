@@ -24,8 +24,8 @@ import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
 import com.ampos.restaurant.model.BillDetailKey;
 import com.ampos.restaurant.model.MenuItem;
-import com.ampos.restaurant.model.Order;
-import com.ampos.restaurant.model.OrderedItem;
+import com.ampos.restaurant.model.dto.OrderDTO;
+import com.ampos.restaurant.model.dto.OrderedItemDTO;
 import com.ampos.restaurant.model.report.BillItem;
 import com.ampos.restaurant.model.report.BillReport;
 import com.ampos.restaurant.service.BillDetailService;
@@ -89,13 +89,13 @@ public class BillController {
 	@PostMapping
 	public ResponseEntity<?> createBill(
 			@ApiParam(value = "List of menus and their quantity", required = true)
-			@RequestBody Order order) {
+			@RequestBody OrderDTO order) {
 		
 		Bill bill = new Bill();
 		billService.saveBill(bill);
 
 		Set<BillDetail> details = new HashSet<>();
-		for (OrderedItem item : order.getOrder()) {
+		for (OrderedItemDTO item : order.getOrder()) {
 			logger.info("Create bill for {}, and quantity is {}", item.getName(), item.getQuantity());
 			BillDetail billDetail = new BillDetail();
 			MenuItem menuItem = menuItemService.findByName(item.getName());
@@ -121,7 +121,7 @@ public class BillController {
 			@ApiParam(value = "Bill id from which bill object will retrieve", required = true)
 			@PathVariable("id") long id,
 			@ApiParam(value = "List of menus and their quantity", required = true)
-			@RequestBody Order order) {
+			@RequestBody OrderDTO order) {
 		
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
@@ -130,7 +130,7 @@ public class BillController {
 			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		Set<BillDetail> details = new HashSet<BillDetail>();
-		for (OrderedItem item : order.getOrder()) {
+		for (OrderedItemDTO item : order.getOrder()) {
 			logger.info("Create Build for {}, and quantity is {}", item.getName(), item.getQuantity());
 			BillDetail billDetail = new BillDetail();
 			MenuItem menuItem = menuItemService.findByName(item.getName());

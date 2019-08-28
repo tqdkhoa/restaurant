@@ -1,4 +1,4 @@
-package com.ampos.restaurant.model;
+package com.ampos.restaurant.model.dto;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class Order implements Serializable {
+public class OrderDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private List<OrderedItem> order;
+	private List<OrderedItemDTO> order;
 }
