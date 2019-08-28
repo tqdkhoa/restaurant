@@ -42,7 +42,7 @@ public class MenuItemController {
 	private MenuItemService menuItemService;
 	
 	@Autowired
-    private ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	// -------------------Retrieve All Menu Items---------------------------
 	@ApiOperation(value = "Retrieve All Menu Items")

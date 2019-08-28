@@ -59,7 +59,7 @@ public class BillController {
 	private MenuItemService menuItemService;
 	
 	@Autowired
-    private ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	// -------------------Retrieve Bill--------------------------------
 	@ApiOperation(value = "Retrieve Bill")
