@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ampos.restaurant.exception.ApplicationRuntimeException;
@@ -64,7 +65,8 @@ public class BillController {
 	// -------------------Retrieve Bill--------------------------------
 	@ApiOperation(value = "Retrieve Bill")
 	@GetMapping("/{id}")
-	public ResponseEntity<?> retrieveBill( 	@ApiParam(value = "Bill id from which bill object will retrieve", required = true) 
+	@ResponseStatus(HttpStatus.OK)
+	public BillReportDTO retrieveBill( 	@ApiParam(value = "Bill id from which bill object will retrieve", required = true) 
 											@PathVariable("id") long id) throws JsonProcessingException{
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
@@ -92,13 +94,14 @@ public class BillController {
 		report.setTotal(totalCost);
 		report.setBillItems(billItems);
 		
-		return new ResponseEntity<>(report, HttpStatus.OK);
+		return report;
 	}
 
 	// -------------------Create A Bill with Menu Item(s)-------------
 	@ApiOperation(value = "Create A Bill with Menu Item(s)")
 	@PostMapping
-	public ResponseEntity<?> createBill(
+	@ResponseStatus(HttpStatus.CREATED)
+	public BillDTO createBill(
 			@ApiParam(value = "List of menus and their quantity", required = true)
 			@RequestBody OrderDTO order) {
 		
@@ -126,13 +129,14 @@ public class BillController {
 		}
 		bill.setBillDetails(details);
 
-		return new ResponseEntity<BillDTO>(convertToDTO(bill), HttpStatus.CREATED);
+		return convertToDTO(bill);
 	}
 
 	// -------------------Update Existing Bill-------------------------
 	@ApiOperation(value = "Update Existing Bill")
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateBill(
+	@ResponseStatus(HttpStatus.OK)
+	public BillDTO updateBill(
 			@ApiParam(value = "Bill id from which bill object will retrieve", required = true)
 			@PathVariable("id") long id,
 			@ApiParam(value = "List of menus and their quantity", required = true)
@@ -160,7 +164,7 @@ public class BillController {
 		}
 		currentBill.setBillDetails(details);
 
-		return new ResponseEntity<BillDTO>(convertToDTO(currentBill), HttpStatus.OK);
+		return convertToDTO(currentBill);
 	}
 	
 	private BillDTO convertToDTO(Bill bill) {

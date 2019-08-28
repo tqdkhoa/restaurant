@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ampos.restaurant.exception.ObjectAlreadyExistException;
@@ -47,6 +48,7 @@ public class MenuItemController {
 	// -------------------Retrieve All Menu Items---------------------------
 	@ApiOperation(value = "Retrieve All Menu Items")
 	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
 	public List<MenuItemDTO> listAllMenuItems(Pageable pageable) {
 		return menuItemService.findAllMenuItems(pageable).stream().map(item -> convertToDTO(item))
 				.collect(Collectors.toList());
@@ -56,7 +58,8 @@ public class MenuItemController {
 	// -------------------Retrieve Single Menu Item--------------------------------
 	@ApiOperation(value = "Retrieve Single Menu Item")
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getMenuItem(
+	@ResponseStatus(HttpStatus.OK)
+	public MenuItemDTO getMenuItem(
 			@ApiParam(value = "Menu id from which Menu object will retrieve", required = true)
 			@PathVariable("id") long id) {
 		
@@ -66,13 +69,14 @@ public class MenuItemController {
 			logger.error("MenuItem with id {} not found", id);
 			throw new ObjectNotFoundException(String.valueOf(id));
 		}
-		return new ResponseEntity<MenuItemDTO>(convertToDTO(item), HttpStatus.OK);
+		return convertToDTO(item);
 	}
 	
 
 	// --------------Retrieve Menu Item(s) by Name, Description, and Details----------
 	@ApiOperation(value = "Retrieve Menu Item(s) by Name, Description, and Details")
 	@GetMapping(value = "/search")
+	@ResponseStatus(HttpStatus.OK)
 	public List<MenuItemDTO> searchMenuByNameOrDescriptinOrDetails(
 			@ApiParam(value = "Search keyword (title, description, or detail) of Menu object will retrieve", required = true)
 			@RequestParam(value = "name") String name, Pageable pageable) {
@@ -84,7 +88,8 @@ public class MenuItemController {
 	// -------------------Create a MenuItem-------------------------
 	@ApiOperation(value = "Create a Menu Item")
 	@PostMapping
-	public ResponseEntity<?> createMenuItem(
+	@ResponseStatus(HttpStatus.CREATED)
+	public MenuItemDTO createMenuItem(
 			@ApiParam(value = "A menu object, include: title, imageUrl, description, price and detail to create a new menu", required = true)
 			@RequestBody MenuItem item) {
 		
@@ -94,14 +99,15 @@ public class MenuItemController {
 			throw new ObjectAlreadyExistException(item.getName());
 		}
 		menuItemService.saveMenuItem(item);
-		return new ResponseEntity<MenuItemDTO>(convertToDTO(item), HttpStatus.CREATED);
+		return convertToDTO(item);
 	}
 	
 
 	// ------------------- Update a MenuItem ------------------------------
 	@ApiOperation(value = "Update a MenuItem")
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateMenuItem(
+	@ResponseStatus(HttpStatus.OK)
+	public MenuItemDTO updateMenuItem(
 			@ApiParam(value = "Menu id from which Menu object will retrieve", required = true)
 			@PathVariable("id") long id,
 			@ApiParam(value = "A menu object, include: title, imageUrl, description, price and detail to update a new menu", required = true)
@@ -120,13 +126,14 @@ public class MenuItemController {
 		currentItem.setPrice(item.getPrice());
 		currentItem.setDetails(item.getDetails());
 		menuItemService.saveMenuItem(currentItem);
-		return new ResponseEntity<MenuItemDTO>(convertToDTO(currentItem), HttpStatus.OK);
+		return convertToDTO(currentItem);
 	}
 
 	// ------------------- Delete a Menu Item-------------------------------------
 	@ApiOperation(value = "Delete a Menu Item")
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteMenuItem(
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMenuItem(
 			@ApiParam(value = "Menu id from which Menu object will be deleted", required = true)
 			@PathVariable("id") long id) {
 		
@@ -137,7 +144,6 @@ public class MenuItemController {
 			throw new ObjectNotFoundException(String.valueOf(id));
 		}
 		menuItemService.deleteMenuItemById(id);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 	private MenuItemDTO convertToDTO(MenuItem menuItem) {
