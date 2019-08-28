@@ -9,20 +9,20 @@ import com.ampos.restaurant.repositories.BillRepository;
 
 @Service("buildService")
 @Transactional
-public class BillServiceImpl implements BillService{
+public class BillServiceImpl implements BillService {
 
-	@Autowired
-	BillRepository repository;
-	
-	public Bill findById(Long id) {
-		return repository.findById(id).orElse(null);
-	}
-	
-	public void saveBill(Bill bill) {
-		repository.save(bill);
-	}
-	
-	public void updateBill(Bill bill) {
-		saveBill(bill);
-	}
+    @Autowired
+    BillRepository repository;
+
+    public Bill findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public void saveBill(Bill bill) {
+        repository.save(bill);
+    }
+
+    public void updateBill(Bill bill) {
+        saveBill(bill);
+    }
 }

@@ -6,16 +6,16 @@ import com.ampos.restaurant.model.BillDetail;
 
 public interface BillDetailService {
 
-	BillDetail findById(Long id);
-	
-	List<BillDetail> findAllBillDetails(); 
-	
-	void saveBillDetail(BillDetail billDetail);
-	
-	void updateBillDetail(BillDetail billDetail);
-	
-	void deleteBillDetailById(Long Id);
-	
-	void deleteAllBillDetails();
-	
+    BillDetail findById(Long id);
+
+    List<BillDetail> findAllBillDetails();
+
+    void saveBillDetail(BillDetail billDetail);
+
+    void updateBillDetail(BillDetail billDetail);
+
+    void deleteBillDetailById(Long Id);
+
+    void deleteAllBillDetails();
+
 }

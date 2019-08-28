@@ -4,10 +4,10 @@ import com.ampos.restaurant.model.Bill;
 
 public interface BillService {
 
-	Bill findById(Long id);
-	
-	void saveBill(Bill bill);
-	
-	void updateBill(Bill bill);
-	
+    Bill findById(Long id);
+
+    void saveBill(Bill bill);
+
+    void updateBill(Bill bill);
+
 }

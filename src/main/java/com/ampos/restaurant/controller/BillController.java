@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +30,6 @@ import com.ampos.restaurant.model.dto.BillDTO;
 import com.ampos.restaurant.model.dto.BillDetailDTO;
 import com.ampos.restaurant.model.dto.BillItemDTO;
 import com.ampos.restaurant.model.dto.BillReportDTO;
-import com.ampos.restaurant.model.dto.MenuItemDTO;
 import com.ampos.restaurant.model.dto.OrderDTO;
 import com.ampos.restaurant.model.dto.OrderedItemDTO;
 import com.ampos.restaurant.service.BillDetailService;
@@ -45,148 +43,143 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/api/bills")
-@Api(value="Bill Management", description="Bill Management")
+@Api(value = "Bill Management", description = "Bill Management")
 public class BillController {
 
-	private static final Logger logger = LoggerFactory.getLogger(BillController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BillController.class);
 
-	@Autowired
-	private BillService billService;
+    @Autowired
+    private BillService billService;
 
-	@Autowired
-	private BillDetailService billDetailService;
+    @Autowired
+    private BillDetailService billDetailService;
 
-	@Autowired
-	private MenuItemService menuItemService;
-	
-	@Autowired
-	private ModelMapper modelMapper;
+    @Autowired
+    private MenuItemService menuItemService;
 
-	// -------------------Retrieve Bill--------------------------------
-	@ApiOperation(value = "Retrieve Bill")
-	@GetMapping("/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public BillReportDTO retrieveBill( 	@ApiParam(value = "Bill id from which bill object will retrieve", required = true) 
-											@PathVariable("id") long id) throws JsonProcessingException{
-		logger.info("Update Bill with id {}", id);
-		Bill currentBill = billService.findById(id);
-		if (currentBill == null) {
-			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ObjectNotFoundException(String.valueOf(id));
-		}
-		
-		BillReportDTO report = new BillReportDTO();
-		report.setBillId(currentBill.getId());
-		
-		Double totalCost = 0.0;
-		Set<BillDetail> billDetails = currentBill.getBillDetails();
-		List<BillItemDTO> billItems = new ArrayList<BillItemDTO>();
-		List<MenuItem> menus = menuItemService.findMenuByInIds(currentBill.getMenuIds());
-		
-		for (BillDetail billDetail : billDetails) {
-			totalCost += billDetail.subTotal();
-			MenuItem orderedMenu = menus.stream()
-					.filter(menu -> menu.getId().equals(billDetail.getId().getMenuItemId())).findFirst().get();
-			BillItemDTO billItem = new BillItemDTO(orderedMenu.getName(), billDetail.getQuantities(),
-					billDetail.getOrderedTime().toGMTString());
-			billItems.add(billItem);
-		}
-		report.setTotal(totalCost);
-		report.setBillItems(billItems);
-		
-		return report;
-	}
+    @Autowired
+    private ModelMapper modelMapper;
 
-	// -------------------Create A Bill with Menu Item(s)-------------
-	@ApiOperation(value = "Create A Bill with Menu Item(s)")
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public BillDTO createBill(
-			@ApiParam(value = "List of menus and their quantity", required = true)
-			@RequestBody OrderDTO order) {
-		
-		Bill bill = new Bill();
-		billService.saveBill(bill);
-		
-		Set<BillDetail> details = new HashSet<>();
-		for (OrderedItemDTO item : order.getOrder()) {
-			logger.info("Create bill for {}, and quantity is {}", item.getName(), item.getQuantity());
-			BillDetail billDetail = new BillDetail();
-			MenuItem menuItem = menuItemService.findByName(item.getName());
-			if (menuItem == null) {
-				logger.error("Unable to create bill. Item name {} does not exist", item.getName());
-				throw new ObjectNotFoundException(item.getName());
-			}
-			if(item.getQuantity() == 0) {
-				logger.error("Unable to create bill. Quantity must greater than 0");
-				throw new ApplicationRuntimeException("Quantity must greater than 0");
-			}
-			billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
-			billDetail.setQuantities(item.getQuantity());
-			billDetail.setOrderedTime(new Date());
-			billDetailService.saveBillDetail(billDetail);
-			details.add(billDetail);
-		}
-		bill.setBillDetails(details);
+    @ApiOperation(value = "Retrieve Bill")
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BillReportDTO retrieveBill(
+            @ApiParam(value = "Bill id from which bill object will retrieve", required = true) @PathVariable("id") long id)
+            throws JsonProcessingException {
+        logger.info("Update Bill with id {}", id);
+        Bill currentBill = billService.findById(id);
+        if (currentBill == null) {
+            logger.error("Unable to update build. Bill with id {} does not exist", id);
+            throw new ObjectNotFoundException(String.valueOf(id));
+        }
 
-		return convertToDTO(bill);
-	}
+        BillReportDTO report = new BillReportDTO();
+        report.setBillId(currentBill.getId());
 
-	// -------------------Update Existing Bill-------------------------
-	@ApiOperation(value = "Update Existing Bill")
-	@PutMapping("/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public BillDTO updateBill(
-			@ApiParam(value = "Bill id from which bill object will retrieve", required = true)
-			@PathVariable("id") long id,
-			@ApiParam(value = "List of menus and their quantity", required = true)
-			@RequestBody OrderDTO order) {
-		
-		logger.info("Update Bill with id {}", id);
-		Bill currentBill = billService.findById(id);
-		if (currentBill == null) {
-			logger.error("Unable to update build. Bill with id {} does not exist", id);
-			throw new ObjectNotFoundException(String.valueOf(id));
-		}
-		Set<BillDetail> details = new HashSet<BillDetail>();
-		List<MenuItem> menus = menuItemService.findMenuByInIds(currentBill.getMenuIds());
-		
-		for (OrderedItemDTO item : order.getOrder()) {
-			logger.info("Create Build for {}, and quantity is {}", item.getName(), item.getQuantity());
-			BillDetail billDetail = new BillDetail();
-			MenuItem orderedMenu = menus.stream()
-					.filter(menu -> menu.getName().equals(item.getName())).findFirst().get();
-			billDetail.setId(new BillDetailKey(currentBill.getId(), orderedMenu.getId()));
-			billDetail.setQuantities(item.getQuantity());
-			billDetail.setOrderedTime(new Date());
-			billDetailService.saveBillDetail(billDetail);
-			details.add(billDetail);
-		}
-		currentBill.setBillDetails(details);
+        Double totalCost = 0.0;
+        Set<BillDetail> billDetails = currentBill.getBillDetails();
+        List<BillItemDTO> billItems = new ArrayList<BillItemDTO>();
+        List<MenuItem> menus = menuItemService.findMenuByInIds(currentBill.getMenuIds());
 
-		return convertToDTO(currentBill);
-	}
-	
-	private BillDTO convertToDTO(Bill bill) {
-		
-		Double totalCost = 0.0;
-		BillDTO billDTO = modelMapper.map(bill, BillDTO.class);
-		List<MenuItem> menus = menuItemService.findMenuByInIds(bill.getMenuIds());
-		Set<BillDetailDTO> billDetailDTOs = new HashSet<>();
-		for(BillDetail billDetail : bill.getBillDetails()) {
-			BillDetailDTO billDetailDTO = modelMapper.map(billDetail, BillDetailDTO.class);
-			MenuItem orderedMenu = menus.stream()
-					.filter(menu -> menu.getId().equals(billDetail.getId().getMenuItemId())).findFirst().get();
-			Double subTotal = orderedMenu.getPrice() * billDetail.getQuantities();
-			totalCost += subTotal;
-			billDetailDTO.setBillId(bill.getId());
-			billDetailDTO.setMenuItem(orderedMenu.getName());
-			billDetailDTO.setQuantity(billDetail.getQuantities());
-			billDetailDTO.setSubTotal(subTotal);
-			billDetailDTOs.add(billDetailDTO);
-		}
-		billDTO.setBillDetails(billDetailDTOs);
-		billDTO.setTotal(totalCost);
-		return billDTO;
-	}
+        for (BillDetail billDetail : billDetails) {
+            totalCost += billDetail.subTotal();
+            MenuItem orderedMenu = menus.stream()
+                    .filter(menu -> menu.getId().equals(billDetail.getId().getMenuItemId())).findFirst().get();
+            BillItemDTO billItem = new BillItemDTO(orderedMenu.getName(), billDetail.getQuantities(),
+                    billDetail.getOrderedTime().toGMTString());
+            billItems.add(billItem);
+        }
+        report.setTotal(totalCost);
+        report.setBillItems(billItems);
+
+        return report;
+    }
+
+    @ApiOperation(value = "Create A Bill with Menu Item(s)")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BillDTO createBill(
+            @ApiParam(value = "List of menus and their quantity", required = true) @RequestBody OrderDTO order) {
+
+        Bill bill = new Bill();
+        billService.saveBill(bill);
+
+        Set<BillDetail> details = new HashSet<>();
+        for (OrderedItemDTO item : order.getOrder()) {
+            logger.info("Create bill for {}, and quantity is {}", item.getName(), item.getQuantity());
+            BillDetail billDetail = new BillDetail();
+            MenuItem menuItem = menuItemService.findByName(item.getName());
+            if (menuItem == null) {
+                logger.error("Unable to create bill. Item name {} does not exist", item.getName());
+                throw new ObjectNotFoundException(item.getName());
+            }
+            if (item.getQuantity() == 0) {
+                logger.error("Unable to create bill. Quantity must greater than 0");
+                throw new ApplicationRuntimeException("Quantity must greater than 0");
+            }
+            billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
+            billDetail.setQuantities(item.getQuantity());
+            billDetail.setOrderedTime(new Date());
+            billDetailService.saveBillDetail(billDetail);
+            details.add(billDetail);
+        }
+        bill.setBillDetails(details);
+
+        return convertToDTO(bill);
+    }
+
+    @ApiOperation(value = "Update Existing Bill")
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BillDTO updateBill(
+            @ApiParam(value = "Bill id from which bill object will retrieve", required = true) @PathVariable("id") long id,
+            @ApiParam(value = "List of menus and their quantity", required = true) @RequestBody OrderDTO order) {
+
+        logger.info("Update Bill with id {}", id);
+        Bill currentBill = billService.findById(id);
+        if (currentBill == null) {
+            logger.error("Unable to update build. Bill with id {} does not exist", id);
+            throw new ObjectNotFoundException(String.valueOf(id));
+        }
+        Set<BillDetail> details = new HashSet<BillDetail>();
+        List<MenuItem> menus = menuItemService.findMenuByInIds(currentBill.getMenuIds());
+
+        for (OrderedItemDTO item : order.getOrder()) {
+            logger.info("Create Build for {}, and quantity is {}", item.getName(), item.getQuantity());
+            BillDetail billDetail = new BillDetail();
+            MenuItem orderedMenu = menus.stream().filter(menu -> menu.getName().equals(item.getName())).findFirst()
+                    .get();
+            billDetail.setId(new BillDetailKey(currentBill.getId(), orderedMenu.getId()));
+            billDetail.setQuantities(item.getQuantity());
+            billDetail.setOrderedTime(new Date());
+            billDetailService.saveBillDetail(billDetail);
+            details.add(billDetail);
+        }
+        currentBill.setBillDetails(details);
+
+        return convertToDTO(currentBill);
+    }
+
+    private BillDTO convertToDTO(Bill bill) {
+
+        Double totalCost = 0.0;
+        BillDTO billDTO = modelMapper.map(bill, BillDTO.class);
+        List<MenuItem> menus = menuItemService.findMenuByInIds(bill.getMenuIds());
+        Set<BillDetailDTO> billDetailDTOs = new HashSet<>();
+        for (BillDetail billDetail : bill.getBillDetails()) {
+            BillDetailDTO billDetailDTO = modelMapper.map(billDetail, BillDetailDTO.class);
+            MenuItem orderedMenu = menus.stream()
+                    .filter(menu -> menu.getId().equals(billDetail.getId().getMenuItemId())).findFirst().get();
+            Double subTotal = orderedMenu.getPrice() * billDetail.getQuantities();
+            totalCost += subTotal;
+            billDetailDTO.setBillId(bill.getId());
+            billDetailDTO.setMenuItem(orderedMenu.getName());
+            billDetailDTO.setQuantity(billDetail.getQuantities());
+            billDetailDTO.setSubTotal(subTotal);
+            billDetailDTOs.add(billDetailDTO);
+        }
+        billDTO.setBillDetails(billDetailDTOs);
+        billDTO.setTotal(totalCost);
+        return billDTO;
+    }
 }

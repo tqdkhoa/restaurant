@@ -11,18 +11,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Embeddable
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
 public class BillDetailKey implements Serializable {
 
-	@Column(name = "menu_item_id")
-	Long menuItemId;
-	
-	@Column(name = "bill_id")
-	Long billId;
+    @Column(name = "menu_item_id")
+    Long menuItemId;
 
-	public BillDetailKey(Long billId, Long menuItemId) {
-		super();
-		this.menuItemId = menuItemId;
-		this.billId = billId;
-	}
+    @Column(name = "bill_id")
+    Long billId;
+
+    public BillDetailKey(Long billId, Long menuItemId) {
+        super();
+        this.menuItemId = menuItemId;
+        this.billId = billId;
+    }
 }

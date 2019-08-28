@@ -20,29 +20,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "bill")
 @ApiModel(description = "All details about the Bill. ")
 public class Bill implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "bill_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "The database generated Bill ID")
-	private Long id;
+    @Id
+    @Column(name = "bill_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "The database generated Bill ID")
+    private Long id;
 
-	@OneToMany(mappedBy = "bill")
-	@ApiModelProperty(notes = "List detail of a bill")
-	Set<BillDetail> billDetails;
-	
-	public List<Long> getMenuIds(){
-		List<Long> ids = new ArrayList<>();
-		for(BillDetail billDetail : billDetails) {
-			ids.add(billDetail.getId().getMenuItemId());
-		}
-		return ids;
-	}
+    @OneToMany(mappedBy = "bill")
+    @ApiModelProperty(notes = "List detail of a bill")
+    Set<BillDetail> billDetails;
+
+    public List<Long> getMenuIds() {
+        List<Long> ids = new ArrayList<>();
+        for (BillDetail billDetail : billDetails) {
+            ids.add(billDetail.getId().getMenuItemId());
+        }
+        return ids;
+    }
 
 }

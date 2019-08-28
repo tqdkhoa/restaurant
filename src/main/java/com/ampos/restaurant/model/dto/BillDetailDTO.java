@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
-public class BillDetailDTO implements Serializable{
+@Getter
+@Setter
+@NoArgsConstructor
+public class BillDetailDTO implements Serializable {
 
-	private Long billId;
-	private String menuItem;
-	private int quantity;
-	private Date orderedTime;
-	private double subTotal;
+    private Long billId;
+    private String menuItem;
+    private int quantity;
+    private Date orderedTime;
+    private double subTotal;
 }

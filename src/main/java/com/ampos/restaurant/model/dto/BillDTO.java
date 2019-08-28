@@ -8,10 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
-public class BillDTO implements Serializable{
+@Getter
+@Setter
+@NoArgsConstructor
+public class BillDTO implements Serializable {
 
-	private Long id;
-	Set<BillDetailDTO> billDetails = new HashSet<>();
-	private Double total;
+    private Long id;
+    Set<BillDetailDTO> billDetails = new HashSet<>();
+    private Double total;
 }

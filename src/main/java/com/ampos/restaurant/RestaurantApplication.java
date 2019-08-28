@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Import;
 import com.ampos.restaurant.configuration.JpaConfiguration;
 
 @Import(JpaConfiguration.class)
-@SpringBootApplication(scanBasePackages={"com.ampos.restaurant"})
+@SpringBootApplication(scanBasePackages = { "com.ampos.restaurant" })
 public class RestaurantApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RestaurantApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(RestaurantApplication.class, args);
+    }
 
-	@Bean
+    @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }

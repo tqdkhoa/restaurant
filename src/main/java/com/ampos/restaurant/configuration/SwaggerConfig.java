@@ -14,19 +14,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-	@Bean
-	public Docket api() {
+    @Bean
+    public Docket api() {
 
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.ampos.restaurant.controller"))
-				.paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
+        return new Docket(DocumentationType.SWAGGER_2).select()
+                .apis(RequestHandlerSelectors.basePackage("com.ampos.restaurant.controller"))
+                .paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
 
-	}
+    }
 
-	private ApiInfo apiEndPointsInfo() {
+    private ApiInfo apiEndPointsInfo() {
 
-		return new ApiInfoBuilder().title("Spring Boot REST API").description("Restaurant Management REST API")
-				.license("Apache 2.0").licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html").version("1.0.0")
-				.build();
-	}
+        return new ApiInfoBuilder().title("Spring Boot REST API").description("Restaurant Management REST API")
+                .license("Apache 2.0").licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html").version("1.0.0")
+                .build();
+    }
 }
