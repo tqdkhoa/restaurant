@@ -8,7 +8,7 @@ This application is designed to support a restaurant to manage their menu and bi
    3. Search menu(s) via title, description or additinal details - <i>support pagination</i>
 ## Manage Bill
    1. Create/Update a bill 
-   2. Retrive information of given bill with number of menu items, and total prices
+   2. Retrieve information of given bill with number of menu items, and total prices
 # Prerequisite
    1. A MySQL Server instance - <i>could use Docker container or standalone installation</i>
    2. Connect to MySQL server, and create a schema: <b>restaurant</b>
