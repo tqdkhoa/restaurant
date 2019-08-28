@@ -21,6 +21,8 @@ import com.ampos.restaurant.RestaurantApplicationTests;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
 import com.ampos.restaurant.model.MenuItem;
+import com.ampos.restaurant.model.dto.BillDTO;
+import com.ampos.restaurant.model.dto.BillDetailDTO;
 import com.ampos.restaurant.model.dto.OrderDTO;
 import com.ampos.restaurant.model.dto.OrderedItemDTO;
 import com.ampos.restaurant.repositories.MenuItemRepository;
@@ -70,7 +72,7 @@ public class BillControllerTest extends RestaurantApplicationTests{
 		MvcResult result = mockMvc.perform(
 				post("/api/bills").contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(asJsonString(order)))
 				.andExpect(status().is(201)).andReturn();
-		Bill actualRes = jsonToObject(result.getResponse().getContentAsString(), Bill.class);
+		BillDTO actualRes = jsonToObject(result.getResponse().getContentAsString(), BillDTO.class);
 		assertEquals(actualRes.getId(), Long.valueOf(1));
 	}
 	
@@ -127,14 +129,14 @@ public class BillControllerTest extends RestaurantApplicationTests{
 				put("/api/bills/1").contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(asJsonString(order_2)))
 				.andExpect(status().is(200)).andReturn();
 
-		Bill actualRes = jsonToObject(result.getResponse().getContentAsString(), Bill.class);
+		BillDTO actualRes = jsonToObject(result.getResponse().getContentAsString(), BillDTO.class);
 		boolean isUpdateSuccessfully = false;
-		Set<BillDetail> billDetails = actualRes.getBillDetails();
-		for (BillDetail billDetail : billDetails) {
-			MenuItem menuItem = menuItemRepository.findById(billDetail.getId().getMenuItemId()).orElse(null);
+		Set<BillDetailDTO> billDetails = actualRes.getBillDetails();
+		for (BillDetailDTO billDetail : billDetails) {
+			MenuItem menuItem = menuItemRepository.findById(2L).orElse(null);
 			if (menuItem != null) {
 				if ("Chicken Burger".equals(menuItem.getName())) {
-					if (billDetail.getQuantities() == 10) {
+					if (billDetail.getQuantity() == 10) {
 						isUpdateSuccessfully = true;
 					}
 				}

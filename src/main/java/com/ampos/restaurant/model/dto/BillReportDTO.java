@@ -1,21 +1,21 @@
-package com.ampos.restaurant.model.report;
+package com.ampos.restaurant.model.dto;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class BillReport implements Serializable {
+public class BillReportDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Long billId;
 	private Double total;
-	private List<BillItem> billItems;
+	private List<BillItemDTO> billItems;
 
-	public BillReport() {
+	public BillReportDTO() {
 		
 	}
 	
-	public BillReport(Long billId, Double total, List<BillItem> billItems) {
+	public BillReportDTO(Long billId, Double total, List<BillItemDTO> billItems) {
 		super();
 		this.billId = billId;
 		this.total = total;
@@ -38,11 +38,11 @@ public class BillReport implements Serializable {
 		this.total = total;
 	}
 
-	public List<BillItem> getBillItems() {
+	public List<BillItemDTO> getBillItems() {
 		return billItems;
 	}
 
-	public void setBillItems(List<BillItem> billItems) {
+	public void setBillItems(List<BillItemDTO> billItems) {
 		this.billItems = billItems;
 	}
 }

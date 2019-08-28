@@ -1,6 +1,8 @@
 package com.ampos.restaurant.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -34,5 +36,13 @@ public class Bill implements Serializable {
 	@OneToMany(mappedBy = "bill")
 	@ApiModelProperty(notes = "List detail of a bill")
 	Set<BillDetail> billDetails;
+	
+	public List<Long> getMenuIds(){
+		List<Long> ids = new ArrayList<>();
+		for(BillDetail billDetail : billDetails) {
+			ids.add(billDetail.getId().getMenuItemId());
+		}
+		return ids;
+	}
 
 }

@@ -1,15 +1,15 @@
-package com.ampos.restaurant.model.report;
+package com.ampos.restaurant.model.dto;
 
 import java.io.Serializable;
 
-public class BillItem implements Serializable{
+public class BillItemDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private String menu;
 	private Integer quatity;
 	private String orderedTime;
 	
-	public BillItem(String menu, Integer quatity, String orderedTime) {
+	public BillItemDTO(String menu, Integer quatity, String orderedTime) {
 		super();
 		this.menu = menu;
 		this.quatity = quatity;

@@ -1,10 +1,12 @@
 package com.ampos.restaurant.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,5 +47,13 @@ public class MenuItemServiceImpl implements MenuItemService{
 	
 	public boolean isMenuItemExist(MenuItem item) {
 		return repository.countByName(item.getName()) != 0;
+	}
+	
+	public List<MenuItem> findMenuByInIds(Collection<Long> ids){
+		return repository.findMenuByInIds(ids);
+	}
+	
+	public List<MenuItem> findMenuByInNames(Collection<String> names){
+		return repository.findMenuByInNames(names);
 	}
 }

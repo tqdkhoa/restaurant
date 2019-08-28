@@ -1,6 +1,8 @@
 package com.ampos.restaurant.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -45,7 +47,7 @@ public class BillDetail {
 		this.orderedTime = ordered_time;
 	}
 	
-	public Double totalCost() {
+	public Double subTotal() {
 		return menuItem.getPrice() * this.quantities;
 	}
 

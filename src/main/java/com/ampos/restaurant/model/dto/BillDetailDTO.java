@@ -11,7 +11,7 @@ import lombok.Setter;
 public class BillDetailDTO implements Serializable{
 
 	private Long billId;
-	private MenuItemDTO menuItem;
+	private String menuItem;
 	private int quantity;
 	private Date orderedTime;
 	private double subTotal;
