@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class MenuItem implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@JsonIgnore
 	@Column(name="menu_item_id")
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@ApiModelProperty(notes = "The database generated Menu Item ID")
@@ -58,6 +61,7 @@ public class MenuItem implements Serializable{
 	@ApiModelProperty(notes = "Additional description for menu item")
 	private String details;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "menuItem")
 	Set<BillDetail> billitems; 
 

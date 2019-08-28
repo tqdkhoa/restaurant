@@ -25,6 +25,7 @@ import com.ampos.restaurant.service.MenuItemService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/api/menu-items")
@@ -47,7 +48,9 @@ public class MenuItemController {
 	// -------------------Retrieve Single Menu Item--------------------------------
 	@ApiOperation(value = "Retrieve Single Menu Item")
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getMenuItem(@PathVariable("id") long id) {
+	public ResponseEntity<?> getMenuItem(
+			@ApiParam(value = "Menu id from which Menu object will retrieve", required = true)
+			@PathVariable("id") long id) {
 		
 		logger.info("Fetching MenuItem with id {}", id);
 		MenuItem item = menuItemService.findById(id);
@@ -62,7 +65,9 @@ public class MenuItemController {
 	// --------------Retrieve Menu Item(s) by Name, Description, and Details----------
 	@ApiOperation(value = "Retrieve Menu Item(s) by Name, Description, and Details")
 	@GetMapping(value = "/search")
-	public ResponseEntity<?> searchMenuByNameOrDescriptinOrDetails(@RequestParam(value = "name") String name, Pageable pageable) {
+	public ResponseEntity<?> searchMenuByNameOrDescriptinOrDetails(
+			@ApiParam(value = "Search keyword (title, description, or detail) of Menu object will retrieve", required = true)
+			@RequestParam(value = "name") String name, Pageable pageable) {
 		List<MenuItem> menuItems = menuItemService.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name, pageable);
 		return new ResponseEntity<List<MenuItem>>(menuItems, HttpStatus.OK);
 	}
@@ -71,7 +76,9 @@ public class MenuItemController {
 	// -------------------Create a MenuItem-------------------------
 	@ApiOperation(value = "Create a Menu Item")
 	@PostMapping
-	public ResponseEntity<?> createMenuItem(@RequestBody MenuItem item) {
+	public ResponseEntity<?> createMenuItem(
+			@ApiParam(value = "A menu object, include: title, imageUrl, description, price and detail to create a new menu", required = true)
+			@RequestBody MenuItem item) {
 		
 		logger.info("Create menu item: {}", item);
 		if (menuItemService.isMenuItemExist(item)) {
@@ -86,7 +93,11 @@ public class MenuItemController {
 	// ------------------- Update a MenuItem ------------------------------
 	@ApiOperation(value = "Update a MenuItem")
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateMenuItem(@PathVariable("id") long id, @RequestBody MenuItem item) {
+	public ResponseEntity<?> updateMenuItem(
+			@ApiParam(value = "Menu id from which Menu object will retrieve", required = true)
+			@PathVariable("id") long id,
+			@ApiParam(value = "A menu object, include: title, imageUrl, description, price and detail to update a new menu", required = true)
+			@RequestBody MenuItem item) {
 		
 		logger.info("Update menu item wit id {}", id);
 		MenuItem currentItem = menuItemService.findById(id);
@@ -107,7 +118,9 @@ public class MenuItemController {
 	// ------------------- Delete a Menu Item-------------------------------------
 	@ApiOperation(value = "Delete a Menu Item")
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteMenuItem(@PathVariable("id") long id) {
+	public ResponseEntity<?> deleteMenuItem(
+			@ApiParam(value = "Menu id from which Menu object will be deleted", required = true)
+			@PathVariable("id") long id) {
 		
 		logger.info("Delete menu item with id {}", id);
 		MenuItem item = menuItemService.findById(id);

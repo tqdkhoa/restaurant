@@ -35,6 +35,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/api/bills")
@@ -55,7 +56,8 @@ public class BillController {
 	// -------------------Retrieve Bill--------------------------------
 	@ApiOperation(value = "Retrieve Bill")
 	@GetMapping("/{id}")
-	public ResponseEntity<?> retrieveBill(@PathVariable("id") long id) throws JsonProcessingException{
+	public ResponseEntity<?> retrieveBill( 	@ApiParam(value = "Bill id from which bill object will retrieve", required = true) 
+											@PathVariable("id") long id) throws JsonProcessingException{
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
 		if (currentBill == null) {
@@ -69,6 +71,7 @@ public class BillController {
 		Double totalCost = 0.0;
 		Set<BillDetail> billDetails = currentBill.getBillDetails();
 		List<BillItem> billItems = new ArrayList<BillItem>();
+		
 		for(BillDetail billDetail : billDetails) {
 			totalCost +=  billDetail.totalCost();
 			MenuItem menu = menuItemService.findById(billDetail.getId().getMenuItemId());
@@ -84,7 +87,9 @@ public class BillController {
 	// -------------------Create A Bill with Menu Item(s)-------------
 	@ApiOperation(value = "Create A Bill with Menu Item(s)")
 	@PostMapping
-	public ResponseEntity<?> createBill(@RequestBody Order order) {
+	public ResponseEntity<?> createBill(
+			@ApiParam(value = "List of menus and their quantity", required = true)
+			@RequestBody Order order) {
 		
 		Bill bill = new Bill();
 		billService.saveBill(bill);
@@ -112,7 +117,11 @@ public class BillController {
 	// -------------------Update Existing Bill-------------------------
 	@ApiOperation(value = "Update Existing Bill")
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateBill(@PathVariable("id") long id, @RequestBody Order order) {
+	public ResponseEntity<?> updateBill(
+			@ApiParam(value = "Bill id from which bill object will retrieve", required = true)
+			@PathVariable("id") long id,
+			@ApiParam(value = "List of menus and their quantity", required = true)
+			@RequestBody Order order) {
 		
 		logger.info("Update Bill with id {}", id);
 		Bill currentBill = billService.findById(id);
