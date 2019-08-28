@@ -12,8 +12,7 @@ public interface MenuItemService {
 
 	MenuItem findByName(String name);
 
-	List<MenuItem> findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(String name, String description,
-			String details, Pageable pageable);
+	List<MenuItem> findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(String name, Pageable pageable);
 
 	void saveMenuItem(MenuItem item);
 

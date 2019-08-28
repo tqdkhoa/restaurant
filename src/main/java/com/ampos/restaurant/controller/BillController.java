@@ -32,8 +32,6 @@ import com.ampos.restaurant.service.BillDetailService;
 import com.ampos.restaurant.service.BillService;
 import com.ampos.restaurant.service.MenuItemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,12 +78,7 @@ public class BillController {
 		report.setTotal(totalCost);
 		report.setBillItems(billItems);
 		
-		// Create ObjectMapper
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		String jsonReport = mapper.writeValueAsString(report);
-		
-		return new ResponseEntity<>(jsonReport, HttpStatus.OK);
+		return new ResponseEntity<>(report, HttpStatus.OK);
 	}
 
 	// -------------------Create A Bill with Menu Item(s)-------------

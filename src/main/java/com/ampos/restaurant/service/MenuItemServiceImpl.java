@@ -25,9 +25,8 @@ public class MenuItemServiceImpl implements MenuItemService{
 		return repository.findByName(name);
 	}
 	
-	public List<MenuItem> findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(String name, String description,
-			String details, Pageable pageable){
-		return repository.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name, description, details, pageable);
+	public List<MenuItem> findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(String name, Pageable pageable){
+		return repository.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name.toLowerCase(), pageable);
 	}
 	
 	public void saveMenuItem(MenuItem item) {

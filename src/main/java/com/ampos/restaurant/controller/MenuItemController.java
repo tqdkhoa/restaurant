@@ -39,10 +39,8 @@ public class MenuItemController {
 	// -------------------Retrieve All Menu Items---------------------------
 	@ApiOperation(value = "Retrieve All Menu Items")
 	@GetMapping
-	public ResponseEntity<List<MenuItem>> listAllMenuItems(Pageable pageable) {
-		
-		List<MenuItem> menuItems = menuItemService.findAllMenuItems(pageable);
-		return new ResponseEntity<List<MenuItem>>(menuItems, HttpStatus.OK);
+	public List<MenuItem> listAllMenuItems(Pageable pageable) {
+		return menuItemService.findAllMenuItems(pageable);
 	}
 	
 
@@ -64,13 +62,8 @@ public class MenuItemController {
 	// --------------Retrieve Menu Item(s) by Name, Description, and Details----------
 	@ApiOperation(value = "Retrieve Menu Item(s) by Name, Description, and Details")
 	@GetMapping(value = "/search")
-	public ResponseEntity<?> searchMenuByNameOrDescriptinOrDetails(
-			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "description", required = false) String description,
-			@RequestParam(value = "details", required = false) String details, Pageable pageeable) {
-		
-		List<MenuItem> menuItems = menuItemService.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name,
-				description, details, pageeable);
+	public ResponseEntity<?> searchMenuByNameOrDescriptinOrDetails(@RequestParam(value = "name") String name, Pageable pageable) {
+		List<MenuItem> menuItems = menuItemService.findByNameIgnoreCaseOrDescriptionIgnoreCaseOrDetailsIgnoreCase(name, pageable);
 		return new ResponseEntity<List<MenuItem>>(menuItems, HttpStatus.OK);
 	}
 	
