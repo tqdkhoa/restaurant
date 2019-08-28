@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ampos.restaurant.exception.ApplicationRuntimeException;
 import com.ampos.restaurant.exception.ObjectNotFoundException;
 import com.ampos.restaurant.model.Bill;
 import com.ampos.restaurant.model.BillDetail;
@@ -112,6 +113,10 @@ public class BillController {
 			if (menuItem == null) {
 				logger.error("Unable to create bill. Item name {} does not exist", item.getName());
 				throw new ObjectNotFoundException(item.getName());
+			}
+			if(item.getQuantity() == 0) {
+				logger.error("Unable to create bill. Quantity must greater than 0");
+				throw new ApplicationRuntimeException("Quantity must greater than 0");
 			}
 			billDetail.setId(new BillDetailKey(bill.getId(), menuItem.getId()));
 			billDetail.setQuantities(item.getQuantity());
